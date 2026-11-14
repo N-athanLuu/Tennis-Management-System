@@ -1,5 +1,5 @@
 CREATE TABLE players (
-    player_id   INT PRIMARY KEY,
+    student_id   INT PRIMARY KEY,
     name        TEXT,
     class_year  INT,
     total_games INT DEFAULT 0,
@@ -21,7 +21,7 @@ CREATE TABLE game_sessions (
 CREATE TABLE queue (
     queue_id    INT PRIMARY KEY,
     session_id  INT,
-    player_id   INT,
+    student_id   INT,
     joined_at   TIMESTAMP DEFAULT NOW()
 );
 
@@ -36,11 +36,11 @@ CREATE TABLE matches (
 
 CREATE TABLE elo_history (
     history_id  INT PRIMARY KEY,
-    player_id   INT,
+    student_id   INT,
     match_id    INT,
     new_elo     INT
 );
 
 CREATE VIEW leaderboard AS
-SELECT RANK() OVER (ORDER BY elo DESC) AS rank, player_id, name, elo
+SELECT RANK() OVER (ORDER BY elo DESC) AS rank, student_id, name, elo
 FROM players;
