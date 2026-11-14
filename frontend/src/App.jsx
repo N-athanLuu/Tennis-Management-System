@@ -6,6 +6,7 @@ export default function App() {
   const [message, setMessage] = useState('')
   const [user, setUser] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [clubTab, setClubTab] = useState('overview')
   useEffect(() => {
     fetch('/api/session').then(async (response) => {
       if (response.ok) {
@@ -91,11 +92,36 @@ export default function App() {
         <p className="intro">Your next great match starts here. A simple space to bring the tennis, pickleball, and badminton community together, on and off the court.</p>
         <div className="caption" style={{ justifyContent: 'flex-end' }}><span>GAME. SET. GO.</span></div>
         </>}</main>
-      <footer id="club">
-        <div><p className="label">BUILT AROUND THE GAME</p><h2>A place for every player.</h2></div>
-        <p>From your first serve to your next friendly rivalry.<br />Make yourself at home on the court.</p>
-        <span className="arrow" aria-hidden="true">↗</span>
-      </footer>
+      {!accountPage && <section className="club-dashboard" aria-label="Club activity">
+        <aside className="club-sidebar">
+          <p className="label">YOUR CLUB</p>
+          <nav aria-label="Club sections">
+            <button type="button" aria-pressed={clubTab === 'overview'} onClick={() => setClubTab('overview')}><span aria-hidden="true">▤</span> Overview</button>
+            <button type="button" aria-pressed={clubTab === 'leaderboard'} onClick={() => setClubTab('leaderboard')}><span aria-hidden="true">♛</span> Leaderboard</button>
+            <button type="button" aria-pressed={clubTab === 'schedules'} onClick={() => setClubTab('schedules')}><span aria-hidden="true">▦</span> Schedules</button>
+          </nav>
+        </aside>
+        <section className="club-content" aria-labelledby="club-heading" aria-live="polite">
+          <p className="label">{clubTab === 'overview' ? 'AT A GLANCE' : clubTab === 'leaderboard' ? 'THE STANDINGS' : 'ON THE CALENDAR'}</p>
+          <h2 id="club-heading">{clubTab === 'overview' ? 'Overview' : clubTab === 'leaderboard' ? 'Leaderboard' : 'Schedules'}</h2>
+          <p className="club-description">{clubTab === 'overview' ? 'Your community, your matches, and your next game—all in one place.' : clubTab === 'leaderboard' ? 'Follow your community’s progress, one match at a time.' : 'See what’s coming up on the court.'}</p>
+          {clubTab === 'overview' ? <div className="sport-schedules overview-cards">
+            <section className="schedule-empty"><h3>Club standings</h3><p>See how players rank across your community.</p><button type="button" className="overview-link" onClick={() => setClubTab('leaderboard')}>View leaderboard ↗</button></section>
+            <section className="schedule-empty"><h3>Upcoming matches</h3><p>Find schedules for badminton, tennis, and pickleball.</p><button type="button" className="overview-link" onClick={() => setClubTab('schedules')}>View schedules ↗</button></section>
+            <section className="schedule-empty"><h3>Three sports. One community.</h3><p>Badminton · Tennis · Pickleball</p><p>Match results and upcoming games will appear once club data is connected.</p></section>
+          </div> : clubTab === 'leaderboard' ? <>
+            <div className="standings-scroll"><table className="standings"><caption className="visually-hidden">Club leaderboard</caption><thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col">Played</th><th scope="col">Wins</th><th scope="col">Points</th></tr></thead><tbody><tr><td colSpan={5}>No rankings yet. Standings will appear once match results are available.</td></tr></tbody></table></div>
+          </> : <div className="sport-schedules">
+            {['Badminton', 'Tennis', 'Pickleball'].map((sport) => (
+              <section className="schedule-empty" key={sport} aria-labelledby={`schedule-${sport.toLowerCase()}`}>
+                <span aria-hidden="true">▦</span>
+                <h3 id={`schedule-${sport.toLowerCase()}`}>{sport}</h3>
+                <p>No {sport.toLowerCase()} matches are scheduled yet. Upcoming matches will appear here.</p>
+              </section>
+            ))}
+          </div>}
+        </section>
+      </section>}
     </div>
   )
 }
