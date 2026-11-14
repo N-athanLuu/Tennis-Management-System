@@ -3,7 +3,7 @@ CREATE TABLE players (
     name        TEXT,
     class_year  INT,
     total_games INT DEFAULT 0,
-    elo         INT DEFAULT 200
+    elo         INT DEFAULT 200,
     password    TEXT
 );
 
