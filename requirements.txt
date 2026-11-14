@@ -2,3 +2,6 @@ fastapi
 uvicorn[standard]
 psycopg[binary]
 python-dotenv
+pandas
+matplotlib
+seaborn
