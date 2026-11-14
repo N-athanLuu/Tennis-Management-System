@@ -3,7 +3,8 @@ CREATE TABLE players (
     name        TEXT,
     class_year  INT,
     total_games INT DEFAULT 0,
-    elo         INT DEFAULT 100
+    elo         INT DEFAULT 200
+    password    TEXT
 );
 
 CREATE TABLE courts (
@@ -18,14 +19,14 @@ CREATE TABLE game_sessions (
 );
 
 CREATE TABLE queue (
-    queue_id    SERIAL PRIMARY KEY,
+    queue_id    INT PRIMARY KEY,
     session_id  INT,
     player_id   INT,
     joined_at   TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE matches (
-    match_id    SERIAL PRIMARY KEY,
+    match_id    INT PRIMARY KEY,
     session_id  INT,
     court_id    INT,
     player1_id  INT,
