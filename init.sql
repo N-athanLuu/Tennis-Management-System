@@ -10,13 +10,13 @@ CREATE TABLE players (
 );
 
 CREATE TABLE courts (
-    court_id INT PRIMARY KEY,
+    court_id SERIAL PRIMARY KEY,
     court_name TEXT NOT NULL UNIQUE,
     active_session_id INT
 );
 
 CREATE TABLE game_sessions (
-    session_id INT PRIMARY KEY,
+    session_id SERIAL PRIMARY KEY,
     title TEXT NOT NULL, 
     session_date DATE NOT NULL DEFAULT CURRENT_DATE,
     start_time TIME NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE game_sessions (
 );
 
 CREATE TABLE queue (
-    queue_id INT PRIMARY KEY,
+    queue_id SERIAL PRIMARY KEY,
     session_id INT NOT NULL,
     student_id INT NOT NULL,
     joined_at TIMESTAMP DEFAULT NOW(),
@@ -34,7 +34,7 @@ CREATE TABLE queue (
 );
 
 CREATE TABLE matches (
-    match_id INT PRIMARY KEY,
+    match_id SERIAL PRIMARY KEY,
     session_id INT,
     court_id INT NOT NULL,
     player1_id INT NOT NULL,
