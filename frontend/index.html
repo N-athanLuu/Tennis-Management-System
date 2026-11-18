@@ -7,7 +7,83 @@
     <title>frontend</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div class="page" id="home" x-data="tennisApp" @hashchange.window="navigate">
+      <div class="court" aria-hidden="true"><div class="singles"></div><div class="service"></div><div class="net"></div></div>
+      <header>
+        <span class="brand">◉ Carden Dang, Nathan Luu, Troy Quach</span>
+        <nav class="account-nav" aria-label="Account" x-cloak>
+          <button class="logout-button" type="button" x-show="user" @click="logout" :disabled="busy">Log out</button>
+          <a href="#login" x-show="!user">Log in</a>
+        </nav>
+      </header>
+      <main x-cloak>
+        <template x-if="accountPage">
+          <section class="account-panel" aria-labelledby="account-title">
+            <a href="#home">← Back to home</a>
+            <h1 id="account-title" x-text="signup ? 'Sign up' : 'Welcome back.'"></h1>
+            <form @submit.prevent="submit">
+              <template x-if="signup">
+                <label>Full name<input name="name" autocomplete="name" required></label>
+              </template>
+              <label>Email address<input name="email" type="email" autocomplete="email" required></label>
+              <label>Password<input name="password" type="password" :autocomplete="signup ? 'new-password' : 'current-password'" :minlength="signup ? 8 : null" required></label>
+              <small x-show="signup">Use at least 8 characters.</small>
+              <template x-if="signup">
+                <label>Confirm password<input name="confirm" type="password" autocomplete="new-password" minlength="8" required></label>
+              </template>
+              <button class="button" type="submit" :disabled="busy" x-text="busy ? 'Please wait… ↗' : signup ? 'Sign up ↗' : 'Log in ↗'"></button>
+              <p role="status" x-text="message"></p>
+            </form>
+            <p><span x-text="signup ? 'Already have an account?' : 'New here?'"></span> <a :href="signup ? '#login' : '#signup'" x-text="signup ? 'Log in' : 'Sign up'"></a></p>
+          </section>
+        </template>
+        <template x-if="!accountPage">
+          <div>
+            <p class="eyebrow">● &nbsp; MANAGING MATCHPLAY AND LEADERBOARD</p>
+            <p role="status" x-show="message" x-text="message"></p>
+            <h1>Racquet Sport<br>Management <em>System</em></h1>
+            <p class="intro">Your next great match starts here. A simple space to bring the tennis, pickleball, and badminton community together, on and off the court.</p>
+            <div class="caption" style="justify-content: flex-end"><span>GAME. SET. GO.</span></div>
+          </div>
+        </template>
+      </main>
+      <section class="club-dashboard" aria-label="Club activity" x-show="!accountPage" x-cloak>
+        <aside class="club-sidebar">
+          <p class="label">YOUR CLUB</p>
+          <nav aria-label="Club sections">
+            <button type="button" :aria-pressed="clubTab === 'overview'" @click="clubTab = 'overview'"><span aria-hidden="true">▤</span> Overview</button>
+            <button type="button" :aria-pressed="clubTab === 'leaderboard'" @click="clubTab = 'leaderboard'"><span aria-hidden="true">♛</span> Leaderboard</button>
+            <button type="button" :aria-pressed="clubTab === 'schedules'" @click="clubTab = 'schedules'"><span aria-hidden="true">▦</span> Schedules</button>
+          </nav>
+        </aside>
+        <section class="club-content" aria-labelledby="club-heading" aria-live="polite">
+          <p class="label" x-text="activeTab.label"></p>
+          <h2 id="club-heading" x-text="activeTab.title"></h2>
+          <p class="club-description" x-text="activeTab.description"></p>
+          <div class="sport-schedules overview-cards" x-show="clubTab === 'overview'">
+            <section class="schedule-empty"><h3>Club standings</h3><p>See how players rank across your community.</p><button type="button" class="overview-link" @click="clubTab = 'leaderboard'">View leaderboard ↗</button></section>
+            <section class="schedule-empty"><h3>Upcoming matches</h3><p>Find schedules for badminton, tennis, and pickleball.</p><button type="button" class="overview-link" @click="clubTab = 'schedules'">View schedules ↗</button></section>
+            <section class="schedule-empty"><h3>Three sports. One community.</h3><p>Badminton · Tennis · Pickleball</p><p>Match results and upcoming games will appear once club data is connected.</p></section>
+          </div>
+          <div class="standings-scroll" x-show="clubTab === 'leaderboard'">
+            <table class="standings">
+              <caption class="visually-hidden">Club leaderboard</caption>
+              <thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col">Played</th><th scope="col">Wins</th><th scope="col">Points</th></tr></thead>
+              <tbody><tr><td colspan="5">No rankings yet. Standings will appear once match results are available.</td></tr></tbody>
+            </table>
+          </div>
+          <div class="sport-schedules" x-show="clubTab === 'schedules'">
+            <template x-for="sport in ['Badminton', 'Tennis', 'Pickleball']" :key="sport">
+              <section class="schedule-empty" :aria-labelledby="'schedule-' + sport.toLowerCase()">
+                <span aria-hidden="true">▦</span>
+                <h3 :id="'schedule-' + sport.toLowerCase()" x-text="sport"></h3>
+                <p x-text="'No ' + sport.toLowerCase() + ' matches are scheduled yet. Upcoming matches will appear here.'"></p>
+              </section>
+            </template>
+          </div>
+        </section>
+      </section>
+    </div>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
