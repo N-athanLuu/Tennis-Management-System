@@ -21,12 +21,11 @@ const clubTabs = {
 }
 
 Alpine.data('tennisApp', () => {
-  let sessionChanged = false
-
   return {
     page: window.location.hash || '#home',
     message: '',
     user: null,
+    sessionReady: false,
     busy: false,
     clubTab: 'overview',
 
@@ -47,9 +46,11 @@ Alpine.data('tennisApp', () => {
         const response = await fetch('/api/session')
         if (!response.ok) return
         const data = await response.json()
-        if (!sessionChanged) this.user = data.user
+        this.user = data.user
       } catch {
         // The public homepage works without account services.
+      } finally {
+        this.sessionReady = true
       }
     },
 
@@ -83,15 +84,8 @@ Alpine.data('tennisApp', () => {
         if (!response.ok) throw new Error(result.error || 'Unable to continue.')
 
         form.reset()
-        if (signup) {
-          this.page = '#login'
-          window.history.replaceState(null, '', '#login')
-          this.message = 'Account created. Please log in.'
-        } else {
-          sessionChanged = true
-          this.user = result.user
-          window.location.hash = '#home'
-        }
+        this.user = result.user
+        window.location.hash = '#home'
       } catch (error) {
         this.message = error instanceof SyntaxError ? 'Account services are unavailable.' : error.message
       } finally {
@@ -102,6 +96,7 @@ Alpine.data('tennisApp', () => {
     async logout() {
       if (this.busy) return
       this.busy = true
+      this.message = ''
       try {
         const response = await fetch('/api/logout', {
           method: 'POST',
@@ -109,9 +104,8 @@ Alpine.data('tennisApp', () => {
           body: '{}',
         })
         if (!response.ok) throw new Error('Unable to log out. Please try again.')
-        sessionChanged = true
         this.user = null
-        this.message = ''
+        this.clubTab = 'overview'
         window.location.hash = '#home'
       } catch (error) {
         this.message = error.message

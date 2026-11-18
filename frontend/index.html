@@ -8,15 +8,14 @@
   </head>
   <body>
     <div class="page" id="home" x-data="tennisApp" @hashchange.window="navigate">
-      <div class="court" aria-hidden="true"><div class="singles"></div><div class="service"></div><div class="net"></div></div>
-      <header>
+      <div class="court" aria-hidden="true" x-show="sessionReady && !user" x-cloak><div class="singles"></div><div class="service"></div><div class="net"></div></div>
+      <header x-show="sessionReady && !user" x-cloak>
         <span class="brand">◉ Carden Dang, Nathan Luu, Troy Quach</span>
-        <nav class="account-nav" aria-label="Account" x-cloak>
-          <button class="logout-button" type="button" x-show="user" @click="logout" :disabled="busy">Log out</button>
-          <a href="#login" x-show="!user">Log in</a>
+        <nav class="account-nav" aria-label="Account">
+          <a href="#login">Log in</a>
         </nav>
       </header>
-      <main x-cloak>
+      <main class="landing" x-show="sessionReady && !user" x-cloak>
         <template x-if="accountPage">
           <section class="account-panel" aria-labelledby="account-title">
             <a href="#home">← Back to home</a>
@@ -40,14 +39,13 @@
         <template x-if="!accountPage">
           <div>
             <p class="eyebrow">● &nbsp; MANAGING MATCHPLAY AND LEADERBOARD</p>
-            <p role="status" x-show="message" x-text="message"></p>
             <h1>Racquet Sport<br>Management <em>System</em></h1>
             <p class="intro">Your next great match starts here. A simple space to bring the tennis, pickleball, and badminton community together, on and off the court.</p>
             <div class="caption" style="justify-content: flex-end"><span>GAME. SET. GO.</span></div>
           </div>
         </template>
       </main>
-      <section class="club-dashboard" aria-label="Club activity" x-show="!accountPage" x-cloak>
+      <main class="club-dashboard" aria-label="Club activity" x-show="user" x-cloak>
         <aside class="club-sidebar">
           <p class="label">YOUR CLUB</p>
           <nav aria-label="Club sections">
@@ -57,7 +55,11 @@
           </nav>
         </aside>
         <section class="club-content" aria-labelledby="club-heading" aria-live="polite">
-          <p class="label" x-text="activeTab.label"></p>
+          <div class="club-toolbar">
+            <p class="label" x-text="activeTab.label"></p>
+            <button class="logout-button" type="button" @click="logout" :disabled="busy">Log out</button>
+          </div>
+          <p role="status" x-show="message" x-text="message"></p>
           <h2 id="club-heading" x-text="activeTab.title"></h2>
           <p class="club-description" x-text="activeTab.description"></p>
           <div class="sport-schedules overview-cards" x-show="clubTab === 'overview'">
@@ -82,7 +84,7 @@
             </template>
           </div>
         </section>
-      </section>
+      </main>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
