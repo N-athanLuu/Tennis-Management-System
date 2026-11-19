@@ -1,5 +1,5 @@
 CREATE TABLE players (
-    student_id INT PRIMARY KEY,
+    student_id VARCHAR(9) PRIMARY KEY,
     name TEXT NOT NULL,
     class_year INT,
     total_games INT DEFAULT 0,
