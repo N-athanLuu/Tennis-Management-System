@@ -7,7 +7,7 @@
     <title>frontend</title>
   </head>
   <body>
-    <div class="page" id="home" x-data="tennisApp" @hashchange.window="navigate">
+    <div class="page" id="home" x-data="tennisApp" :class="{ 'dashboard-page': user }" @hashchange.window="navigate">
       <div class="court" aria-hidden="true" x-show="sessionReady && !user" x-cloak><div class="singles"></div><div class="service"></div><div class="net"></div></div>
       <header x-show="sessionReady && !user" x-cloak>
         <span class="brand">◉ Carden Dang, Nathan Luu, Troy Quach</span>
@@ -56,16 +56,54 @@
         </aside>
         <section class="club-content" aria-labelledby="club-heading" aria-live="polite">
           <div class="club-toolbar">
-            <p class="label" x-text="activeTab.label"></p>
+            <p class="label" x-show="activeTab.label" x-text="activeTab.label"></p>
             <button class="logout-button" type="button" @click="logout" :disabled="busy">Log out</button>
           </div>
           <p role="status" x-show="message" x-text="message"></p>
           <h2 id="club-heading" x-text="activeTab.title"></h2>
-          <p class="club-description" x-text="activeTab.description"></p>
-          <div class="sport-schedules overview-cards" x-show="clubTab === 'overview'">
-            <section class="schedule-empty"><h3>Club standings</h3><p>See how players rank across your community.</p><button type="button" class="overview-link" @click="clubTab = 'leaderboard'">View leaderboard ↗</button></section>
-            <section class="schedule-empty"><h3>Upcoming matches</h3><p>Find schedules for badminton, tennis, and pickleball.</p><button type="button" class="overview-link" @click="clubTab = 'schedules'">View schedules ↗</button></section>
-            <section class="schedule-empty"><h3>Three sports. One community.</h3><p>Badminton · Tennis · Pickleball</p><p>Match results and upcoming games will appear once club data is connected.</p></section>
+          <p class="club-description" x-show="activeTab.description" x-text="activeTab.description"></p>
+          <div class="club-overview" x-show="clubTab === 'overview'">
+            <label class="sport-picker">
+              Sports
+              <select x-model="selectedSport">
+                <option value="tennis">Tennis</option>
+                <option value="pickleball">Pickleball</option>
+                <option value="badminton">Badminton</option>
+              </select>
+            </label>
+            <div class="tennis-courts" x-show="selectedSport === 'tennis'">
+              <template x-for="court in tennisCourts" :key="court.number">
+                <section class="tennis-court-card" :aria-labelledby="'court-title-' + court.number">
+                  <div class="tennis-court-visual">
+                    <h3 :id="'court-title-' + court.number" x-text="'Court ' + court.number"></h3>
+                    <div class="tennis-court-drawing" aria-hidden="true">
+                      <div class="tennis-court-singles"></div>
+                      <div class="tennis-court-service"></div>
+                      <div class="tennis-court-net"></div>
+                    </div>
+                  </div>
+                  <div class="tennis-court-info">
+                    <dl class="tennis-court-status">
+                      <dt>Status</dt>
+                      <dd></dd>
+                    </dl>
+                    <details class="tennis-court-queue"
+                      @click.outside="$el.open = false"
+                      @keydown.escape.stop="if ($el.open) { $el.open = false; $el.querySelector('summary').focus() }">
+                      <summary>
+                        <span :id="'court-queue-' + court.number" x-text="'Queue: ' + court.queue.length"></span>
+                        <span class="queue-chevron" aria-hidden="true"></span>
+                      </summary>
+                      <ol :aria-labelledby="'court-queue-' + court.number">
+                        <template x-for="player in court.queue">
+                          <li x-text="player"></li>
+                        </template>
+                      </ol>
+                    </details>
+                  </div>
+                </section>
+              </template>
+            </div>
           </div>
           <div class="standings-scroll" x-show="clubTab === 'leaderboard'">
             <table class="standings">

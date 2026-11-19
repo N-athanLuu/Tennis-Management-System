@@ -4,9 +4,7 @@ import './App.css'
 
 const clubTabs = {
   overview: {
-    label: 'AT A GLANCE',
     title: 'Overview',
-    description: 'Your community, your matches, and your next game—all in one place.',
   },
   leaderboard: {
     label: 'THE STANDINGS',
@@ -28,6 +26,11 @@ Alpine.data('tennisApp', () => {
     sessionReady: false,
     busy: false,
     clubTab: 'overview',
+    selectedSport: 'tennis',
+    tennisCourts: Array.from({ length: 10 }, (_, index) => ({
+      number: index + 1,
+      queue: [],
+    })),
 
     get signup() {
       return this.page === '#signup'
@@ -106,6 +109,7 @@ Alpine.data('tennisApp', () => {
         if (!response.ok) throw new Error('Unable to log out. Please try again.')
         this.user = null
         this.clubTab = 'overview'
+        this.selectedSport = 'tennis'
         window.location.hash = '#home'
       } catch (error) {
         this.message = error.message

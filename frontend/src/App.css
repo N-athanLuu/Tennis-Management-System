@@ -75,6 +75,33 @@ button:disabled { opacity: .6; cursor: wait; }
 @media (max-width: 700px) { .club-dashboard { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } .club-sidebar { padding: 24px 7%; border-right: 0; border-bottom: 1px solid #dce5ef; } .club-sidebar nav { display: flex; flex-wrap: wrap; margin-top: 16px; } .club-content { padding: 30px 7%; } }
 .sport-schedules { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 20px; }
 
-.overview-link { padding: 10px 0; border: 0; background: transparent; color: #125abb; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-align: left; }
-.overview-link:hover { text-decoration: underline; text-underline-offset: 4px; }
-.overview-link:focus-visible { outline: 2px solid #125abb; outline-offset: 4px; }
+.club-toolbar .logout-button { margin-left: auto; }
+.club-overview { margin-top: 24px; }
+.sport-picker { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; font-weight: 600; }
+.sport-picker select { min-width: 145px; padding: 8px 12px; border: 1px solid #b8cce2; border-radius: 4px; background: white; color: #123d72; font: inherit; }
+.tennis-courts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.tennis-court-card { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 8px; padding: 8px; border: 1px solid #dce5ef; border-radius: 6px; background: #f8fafc; }
+.tennis-court-visual { padding: 10px; border-radius: 4px; background: #125abb; color: white; }
+.tennis-court-visual h3 { margin: 0 0 8px; font-size: 13px; }
+.tennis-court-drawing { position: relative; width: 100%; max-width: 180px; aspect-ratio: 0.55; margin: 0 auto; border: 1px solid #fff; }
+.tennis-court-singles { position: absolute; inset: 0 12.5%; border-inline: 1px solid #fff; }
+.tennis-court-service { position: absolute; inset: 23% 12.5%; border-block: 1px solid #fff; }
+.tennis-court-service::after { content: ''; position: absolute; left: 50%; height: 100%; border-left: 1px solid #fff; }
+.tennis-court-net { position: absolute; top: 50%; left: -4%; width: 108%; border-top: 2px solid white; }
+.tennis-court-info { display: flex; flex-direction: column; gap: 8px; font-size: 12px; }
+.tennis-court-status { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px; margin: 0; }
+.tennis-court-status dt { font-weight: 600; }
+.tennis-court-status dd, .tennis-court-queue ol { margin: 0; border: 1px solid #b8cce2; border-radius: 4px; background: white; overflow-wrap: anywhere; }
+.tennis-court-status dd { min-height: 28px; padding: 4px; }
+.page.dashboard-page { overflow: visible; }
+.tennis-court-queue { position: relative; }
+.tennis-court-queue[open] { z-index: 1; }
+.tennis-court-queue summary { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 6px; border: 1px solid #b8cce2; border-radius: 4px; background: white; color: #125abb; font-weight: 600; cursor: pointer; }
+.tennis-court-queue summary:hover { background: #e7f2ff; }
+.tennis-court-queue summary::-webkit-details-marker { display: none; }
+.queue-chevron { width: 7px; height: 7px; flex: none; margin-right: 2px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); }
+.tennis-court-queue[open] .queue-chevron { transform: translateY(2px) rotate(225deg); }
+.tennis-court-queue ol { position: absolute; top: calc(100% + 6px); inset-inline: 0; min-height: 90px; max-height: 180px; overflow: auto; padding: 6px 8px 6px 22px; box-shadow: 0 6px 18px #123d7226; }
+@media (max-width: 1100px) { .tennis-courts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .tennis-courts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .tennis-courts { grid-template-columns: 1fr; } }
