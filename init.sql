@@ -9,15 +9,9 @@ CREATE TABLE players (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE courts (
-    court_id SERIAL PRIMARY KEY,
-    court_name TEXT NOT NULL UNIQUE,
-    active_session_id INT
-);
-
 CREATE TABLE game_sessions (
     session_id SERIAL PRIMARY KEY,
-    title TEXT NOT NULL, 
+    title TEXT NOT NULL,
     session_date DATE NOT NULL DEFAULT CURRENT_DATE,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
@@ -25,32 +19,38 @@ CREATE TABLE game_sessions (
     is_active BOOLEAN DEFAULT FALSE
 );
 
+CREATE TABLE courts (
+    court_id SERIAL PRIMARY KEY,
+    court_name TEXT NOT NULL UNIQUE,
+    active_session_id INT REFERENCES game_sessions(session_id) ON DELETE SET NULL
+);
+
 CREATE TABLE queue (
     queue_id SERIAL PRIMARY KEY,
-    session_id INT NOT NULL,
-    student_id INT NOT NULL,
+    session_id INT NOT NULL REFERENCES game_sessions(session_id) ON DELETE CASCADE,
+    student_id VARCHAR(9) NOT NULL REFERENCES players(student_id) ON DELETE CASCADE,
     joined_at TIMESTAMP DEFAULT NOW(),
     UNIQUE (session_id, student_id)
 );
 
 CREATE TABLE matches (
     match_id SERIAL PRIMARY KEY,
-    session_id INT,
-    court_id INT NOT NULL,
-    player1_id INT NOT NULL,
-    player2_id INT NOT NULL,
-    winner_id INT,
+    session_id INT REFERENCES game_sessions(session_id) ON DELETE SET NULL,
+    court_id INT NOT NULL REFERENCES courts(court_id),
+    player1_id VARCHAR(9) NOT NULL REFERENCES players(student_id),
+    player2_id VARCHAR(9) NOT NULL REFERENCES players(student_id),
+    winner_id VARCHAR(9) REFERENCES players(student_id),
     started_at TIMESTAMP DEFAULT NOW(),
     ended_at TIMESTAMP  
 );
-    
+
 CREATE TABLE elo_history (
-    history_id INT PRIMARY KEY,
-    student_id INT NOT NULL,
-    match_id INT,
+    history_id SERIAL PRIMARY KEY,
+    student_id VARCHAR(9) NOT NULL REFERENCES players(student_id) ON DELETE CASCADE,
+    match_id INT REFERENCES matches(match_id) ON DELETE SET NULL,
     new_elo INT NOT NULL
 );
 
 CREATE VIEW leaderboard AS
 SELECT RANK() OVER (ORDER BY elo DESC) AS rank, student_id, name, elo
-FROM players;   
+FROM players;
